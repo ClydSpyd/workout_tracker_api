@@ -2,12 +2,10 @@ import { RoutineRepository } from "./routine.repository";
 import { RoutineInput } from "./routine.types";
 
 export class RoutineService {
-  constructor(
-    private repository = new RoutineRepository()
-  ) {}
+  private repository = new RoutineRepository();
 
-  async createRoutine(data: RoutineInput) {
-    return this.repository.create(data);
+  async createRoutine(data: RoutineInput, userId: string) {
+    return this.repository.create({ ...data, userId });
   }
 
   async getRoutine(id: string) {
@@ -16,8 +14,8 @@ export class RoutineService {
     return routine;
   }
 
-  async getAllRoutines() {
-    return this.repository.findAll();
+  async getAllRoutines(userId?: string) {
+    return this.repository.findAll(userId);
   }
 
   async deleteRoutine(id: string) {

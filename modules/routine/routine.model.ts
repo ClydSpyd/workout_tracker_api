@@ -13,6 +13,7 @@ const RoutineSchema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String },
     exercises: { type: [RoutineExerciseSchema], required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true }
 );

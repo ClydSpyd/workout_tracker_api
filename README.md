@@ -21,7 +21,10 @@ Each file has a single, clear responsibility:
 | `[module].model.ts`      | Defines the MongoDB schema (Mongoose model)
 | `[module].types.ts`      | Contains TypeScript types and DTO definitions
 
-## API Functionalities Overview
+
+# API Functionalities Overview
+
+## Modules
 
 ### Workout Module
 This module enables users to:
@@ -38,8 +41,29 @@ This module enables users to:
 - **List all routines:** View all available routines, supporting reference, planning, or selection for a workout.
 - **Delete a routine:** Remove a routine template if it is no longer needed.
 
-### Shared & Core Functionalities
-- **Database Connection:** Securely connects to MongoDB using environment variables, ensuring data persistence for workouts and routines.
-- **Error Handling:** Provides consistent, user-friendly error responses for all API endpoints, improving reliability and debugging.
+### User Module
+- **Register and login:** Handles user registration (with password hashing) and login (with JWT issuance).
+- **User profile:** Stores email, password, username, profile pic, and other profile fields.
+- **Repository/service pattern:** Separates database logic from business logic for maintainability.
+
+### UserMetrics Module
+- **Track metrics:** Allows users to record weight, BMI, body fat %, and personal bests (flexible keys).
+- **History:** Supports historical tracking and analytics for user metrics.
+- **Partial updates:** Endpoints accept partial objects for easy metric updates.
+- **Repository/service pattern:** Clean separation of DB and business logic.
+
+
+## Middlewares
+
+### authMiddleware
+- Verifies JWT tokens in Authorization header.
+- Attaches user info (id, email, etc.) to req.user for downstream access.
+- Used to protect routes that require authentication.
+
+### errorHandler
+- Catches errors thrown in controllers/routes.
+- Logs error details for debugging.
+- Sends standardized JSON error responses to the client.
+- Optionally includes stack trace in development mode.
 
 ---

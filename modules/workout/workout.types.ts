@@ -9,7 +9,7 @@ export interface WorkoutExerciseInput {
 }
 
 export interface LogWorkoutInput {
-  userId: string;
+  // userId: string; -- extract from the auth middleware, no need to include it in the input
   date: string; // ISO string from client
   notes?: string;
   exercises: WorkoutExerciseInput[];
