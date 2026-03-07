@@ -6,3 +6,8 @@ export interface AuthenticatedRequest extends Request {
     email: string;
   };
 }
+
+export interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
+}

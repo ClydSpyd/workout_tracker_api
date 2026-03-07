@@ -1,3 +1,5 @@
+import { Document, Types } from "mongoose";
+
 export interface UserInput {
   email: string;
   password: string;
@@ -5,7 +7,11 @@ export interface UserInput {
   username: string;
 }
 
-export interface UserDocument extends UserInput {
-  _id: string;
+export interface UserDocument extends Document {
+  email: string;
+  password: string;
+  username: string;
   createdAt: Date;
+  profilePictureUrl?: string;
+  _id: Types.ObjectId;
 }
