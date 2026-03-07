@@ -8,9 +8,24 @@ export interface WorkoutExerciseInput {
   sets: WorkoutSetInput[];
 }
 
-export interface LogWorkoutInput {
-  // userId: string; -- extract from the auth middleware, no need to include it in the input
-  date: string; // ISO string from client
+export interface CreateWorkoutPayload {
+  exercises: WorkoutExerciseInput[]; // Can be added incrementally
   notes?: string;
+  location?: string;
+  baseId?: string; // ID of the routine this workout is based on, if any
+  date?: Date; // defaults to now
+}
+
+type BaseWorkout = WorkoutExerciseInput[];
+
+export interface WorkoutSession {
+  _id: string;
+  userId: string;
   exercises: WorkoutExerciseInput[];
+  date: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  baseWorkout?: BaseWorkout; // original routine exercises, if created from a routine
+  notes?: string;
+  location?: string;
 }

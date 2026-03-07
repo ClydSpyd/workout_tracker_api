@@ -19,11 +19,13 @@ const ExerciseSchema = new mongoose.Schema(
 const WorkoutSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true, index: true },
-    date: { type: Date, required: true, index: true },
+    date: { type: Date, required: true, index: true, default: Date.now },
     notes: { type: String },
+    location: { type: String },
     exercises: { type: [ExerciseSchema], required: true },
+    baseId: { type: mongoose.Schema.Types.ObjectId, ref: "Routine" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const WorkoutModel = mongoose.model(

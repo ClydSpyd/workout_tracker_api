@@ -6,6 +6,10 @@ export class UserService {
   private repository = new UserRepository();
 
   async register(data: UserInput) {
+    if (data.password !== data.repeatPassword) {
+      throw new Error("Passwords do not match");
+    }
+    
     const hashed = await bcrypt.hash(data.password, 10);
     const user = await this.repository.create({ ...data, password: hashed });
     return user;

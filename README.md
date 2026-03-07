@@ -28,11 +28,18 @@ Each file has a single, clear responsibility:
 
 ### Workout Module
 This module enables users to:
-- **Log a workout session:** Record details of a gym visit, including date, notes, and a list of exercises performed (with sets, reps, and weights).
-- **Fetch a specific workout:** Retrieve all details for a single workout by its unique ID.
-- **List all workouts for a user:** Get a history of workouts performed by a specific user, supporting progress tracking and analytics.
-- **Prevent duplicate logging:** Ensures a user cannot log more than one workout for the same date.
-- **Delete a workout:** Remove a workout record if needed (e.g., for corrections).
+- **Create a workout session (incremental):**
+	- `POST /api/workout/` — Start a new workout session. Accepts partial data (routineId/baseId, date, initial exercises, notes). You can begin with just a routine reference and add exercises/notes later.
+- **Update workout session incrementally:**
+	- `PATCH /api/workout/:id` — Add exercises, update notes, or metrics as the session progresses. Accepts partial updates.
+- **Fetch a specific workout:**
+	- `GET /api/workout/:id` — Retrieve the current state of a workout session by its unique ID.
+- **List all workouts for a user:**
+	- `GET /api/workout/mine` — Get a history of workouts performed by the authenticated user.
+- **Prevent duplicate logging:**
+	- Ensures a user cannot log more than one workout for the same date.
+- **Delete a workout:**
+	- Remove a workout record if needed (e.g., for corrections).
 
 ### Routine Module
 This module enables users to:
