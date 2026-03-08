@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { RoutineService } from "./routine.service";
 import { AuthenticatedRequest } from "../../types/auth";
+import { CreateRoutineSchema } from "./routine.schema";
+import z from "zod";
 
 const service = new RoutineService();
 
@@ -11,9 +13,18 @@ const service = new RoutineService();
 export async function createRoutine(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
+    const result = CreateRoutineSchema.safeParse(req.body);
+    if (!result.success) {
+      const flatErrors = result.error.issues.map((e: z.core.$ZodIssue) => {
+        console.error(`CREATE_ROUTINE [${e.path.join(".")}] ${e.message}`);
+        return `${e.message}`;
+      });
+      return res.status(400).json({ error: flatErrors[0] });
+    }
+    
     const authReq = req as AuthenticatedRequest;
     const userId = authReq.user.id;
     const routine = await service.createRoutine(req.body, userId);
@@ -30,7 +41,7 @@ export async function createRoutine(
 export async function getRoutine(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const routine = await service.getRoutine(String(req.params.id));
@@ -47,7 +58,7 @@ export async function getRoutine(
 export async function getAllRoutines(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const routines = await service.getAllRoutines();
@@ -64,7 +75,7 @@ export async function getAllRoutines(
 export async function getAllRoutinesByUser(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const authReq = req as AuthenticatedRequest;
@@ -84,12 +95,16 @@ export async function getAllRoutinesByUser(
 export async function updateRoutine(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const authReq = req as AuthenticatedRequest;
     const userId = authReq.user.id;
-    const routine = await service.updateRoutine(String(req.params.id), req.body, userId);
+    const routine = await service.updateRoutine(
+      String(req.params.id),
+      req.body,
+      userId,
+    );
     res.json(routine);
   } catch (err) {
     next(err);

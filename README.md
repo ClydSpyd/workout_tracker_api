@@ -20,6 +20,7 @@ Each file has a single, clear responsibility:
 | `[module].repository.ts` | Handles database access and queries
 | `[module].model.ts`      | Defines the MongoDB schema (Mongoose model)
 | `[module].types.ts`      | Contains TypeScript types and DTO definitions
+| `[module].schema.ts`.    | Defines zod validation schema for module controller
 
 
 # API Functionalities Overview

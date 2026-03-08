@@ -11,7 +11,17 @@ export class UserRepository {
     // return UserModel.findOne({ email }).exec();
   }
 
-  async findByKeys(keys: Partial<UserInput>): Promise<UserDocument[]> {
-    return UserModel.find(keys).select('-password');
+  async findByKeys(
+    keys: Partial<UserInput>,
+    matchAny?: boolean,
+  ): Promise<UserDocument[]> {
+    const filter = matchAny
+      ? {
+          $or: [
+            ...Object.entries(keys).map(([key, value]) => ({ [key]: value })),
+          ],
+        }
+      : keys;
+    return UserModel.find(filter).select("-password");
   }
 }

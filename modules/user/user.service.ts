@@ -6,17 +6,17 @@ export class UserService {
   private repository = new UserRepository();
 
   async register(data: UserInput): Promise<UserDocument> {
-    const existing = await this.repository.findByKeys({
-      email: data.email,
-      username: data.username,
-    });
+
+    const existing = await this.repository.findByKeys(
+      {
+        email: data.email,
+        username: data.username,
+      },
+      true,
+    );
 
     if (existing.length > 0) {
       throw new Error("Email or username already in use");
-    }
-
-    if (data.password !== data.repeatPassword) {
-      throw new Error("Passwords do not match");
     }
 
     const hashed = await bcrypt.hash(data.password, 10);
