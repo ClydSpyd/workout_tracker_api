@@ -18,7 +18,10 @@ export class WorkoutRepository {
      * @returns Created workout document
      */
   async create(data: any) {
-    return WorkoutModel.create(data);
+    return (await WorkoutModel.create(data)).populate({
+      path: "baseRoutine",
+      select:"-description"
+    });
   }
 
   async findById(id: string) {

@@ -8,6 +8,10 @@ export interface WorkoutExerciseInput {
   sets: WorkoutSetInput[];
 }
 
+export interface SetPayload {
+  name: string;
+  setData: WorkoutSetInput;
+}
 export interface CreateWorkoutPayload {
   exercises: WorkoutExerciseInput[]; // Can be added incrementally
   notes?: string;

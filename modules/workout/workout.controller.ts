@@ -12,6 +12,26 @@ import { WorkoutService } from "./workout.service";
 import { AuthenticatedRequest } from "../../types/auth";
 
 const service = new WorkoutService();
+
+export async function createWorkout(
+  /**
+   * POST /api/workout/
+   * Create a new workout session (can be partial, e.g. routineId only).
+   * Payload: { baseId, date, notes, exercises }
+   */
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    const workout = await service.createWorkout(req.body, userId);
+    res.status(201).json(workout);
+  } catch (err) {
+    next(err);
+  }
+}
 export async function updateWorkout(
   /**
    * PATCH /api/workout/:id
@@ -32,11 +52,11 @@ export async function updateWorkout(
   }
 }
 
-export async function createWorkout(
+export async function addSetToWorkout(
   /**
-   * POST /api/workout/
-   * Create a new workout session (can be partial, e.g. routineId only).
-   * Payload: { baseId, date, notes, exercises }
+   * POST /api/workout/:id/set
+   * Add a new set to an exercise within a workout session.
+   * Payload: { exerciseId, setData }
    */
   req: Request,
   res: Response,
@@ -45,8 +65,12 @@ export async function createWorkout(
   try {
     const authReq = req as AuthenticatedRequest;
     const userId = authReq.user.id;
-    const workout = await service.createWorkout(req.body, userId);
-    res.status(201).json(workout);
+    const workout = await service.addSetToWorkout(
+      String(req.params.id),
+      req.body,
+      userId
+    );
+    res.json(workout);
   } catch (err) {
     next(err);
   }

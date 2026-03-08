@@ -20,10 +20,14 @@ const WorkoutSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true, index: true },
     date: { type: Date, required: true, index: true, default: Date.now },
-    notes: { type: String },
-    location: { type: String },
+    notes: { type: String, default: "" },
+    location: { type: String, default: "" },
     exercises: { type: [ExerciseSchema], required: true },
-    baseId: { type: mongoose.Schema.Types.ObjectId, ref: "Routine" },
+    baseRoutine: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Routine",
+      default: null,
+    },
   },
   { timestamps: true },
 );

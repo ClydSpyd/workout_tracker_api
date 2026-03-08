@@ -1,32 +1,14 @@
-/**
- * Workout Routes
- * Handles routing for workout session creation, incremental updates, retrieval, and listing.
- * Endpoints:
- *   - POST /api/workout/ : Create a new workout session (partial allowed)
- *   - PATCH /api/workout/:id : Incrementally update a workout session
- *   - GET /api/workout/:id : Retrieve a workout session
- *   - GET /api/workout/mine : List all workouts for the authenticated user
- *
- * Auth required for all except status route.
- */
 import { Router } from "express";
 import {
   createWorkout,
   getWorkout,
   getUserWorkouts,
   updateWorkout,
+  addSetToWorkout,
 } from "./workout.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 
 const router = Router();
-
-/**
- * GET /api/workout/
- * Public route. Returns API status message.
- */
-router.get("/", (req, res) => {
-  res.send("Workout API is running");
-});
 
 /**
  * POST /api/workout/
@@ -40,7 +22,20 @@ router.post("/", authMiddleware, createWorkout);
  * Auth required. Incrementally update a workout session (add exercise, update metrics, etc).
  * Payload: Partial<WorkoutSession>
  */
-router.patch("/:id", authMiddleware, updateWorkout); // PATCH handler to be implemented in controller
+router.patch("/:id", authMiddleware, updateWorkout);
+
+/**
+ * POST /api/workout/:id/set
+ * Auth required. Add a new set to an exercise within a workout session.
+ * Payload: SetPayload
+ */
+router.post("/:id/set", authMiddleware, addSetToWorkout);
+
+/**
+ * GET /api/workout/mine
+ * Auth required. Get all workouts for the authenticated user.
+ */
+router.get("/mine", authMiddleware, getUserWorkouts);
 
 /**
  * GET /api/workout/:id
@@ -48,10 +43,5 @@ router.patch("/:id", authMiddleware, updateWorkout); // PATCH handler to be impl
  */
 router.get("/:id", authMiddleware, getWorkout);
 
-/**
- * GET /api/workout/mine
- * Auth required. Get all workouts for the authenticated user.
- */
-router.get("/mine", authMiddleware, getUserWorkouts);
 
 export default router;
