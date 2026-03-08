@@ -12,7 +12,7 @@ body {
   padding: 0;
 }
 .container {
-  max-width: 700px;
+  max-width: 800px;
   margin: 40px auto;
   background: var(--background-color);
   border-radius: 8px;
@@ -33,6 +33,7 @@ ul {
 }
 li {
   margin-bottom: 8px;
+  font-size: 14px;
 }
 footer {
   margin-top: 32px;
@@ -53,4 +54,15 @@ a {
   margin-right: 8px;
   font-size: 0.75em;
   letter-spacing: 0.5px;
+  width: 60px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.slug{
+    font-family: "Courier New", Courier, monospace;
+    font-weight: 600;
+    color: var(--secondary-color);
+    padding: 2px 4px;
+    border-radius: 4px;
 }
