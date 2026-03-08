@@ -11,11 +11,15 @@ const RoutineExerciseSchema = new mongoose.Schema(
 const RoutineSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    description: { type: String },
+    description: { type: String, default: "" },
     exercises: { type: [RoutineExerciseSchema], required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    }
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const RoutineModel = mongoose.model(

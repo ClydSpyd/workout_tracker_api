@@ -4,6 +4,10 @@ import { AuthenticatedRequest } from "../../types/auth";
 
 const service = new RoutineService();
 
+/**
+ * Creates a new routine for the authenticated user.
+ * POST /api/routine/
+ */
 export async function createRoutine(
   req: Request,
   res: Response,
@@ -19,6 +23,10 @@ export async function createRoutine(
   }
 }
 
+/**
+ * GET /api/routine/:id
+ * Retrieves a specific routine by its ID.
+ */
 export async function getRoutine(
   req: Request,
   res: Response,
@@ -32,6 +40,10 @@ export async function getRoutine(
   }
 }
 
+/**
+ * GET /api/routine/
+ * Retrieves all routines.
+ */
 export async function getAllRoutines(
   req: Request,
   res: Response,
@@ -45,6 +57,10 @@ export async function getAllRoutines(
   }
 }
 
+/**
+ * GET /api/routine/user
+ * Retrieves all routines for the authenticated user.
+ */
 export async function getAllRoutinesByUser(
   req: Request,
   res: Response,
@@ -53,8 +69,28 @@ export async function getAllRoutinesByUser(
   try {
     const authReq = req as AuthenticatedRequest;
     const userId = authReq.user.id;
+    console.log("Fetching routines for user ID:", userId); // Debug log
     const routines = await service.getAllRoutines(userId);
     res.json(routines);
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * PATCH /api/routine/:id
+ * Updates an existing routine (e.g. add/remove exercises).
+ */
+export async function updateRoutine(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    const routine = await service.updateRoutine(String(req.params.id), req.body, userId);
+    res.json(routine);
   } catch (err) {
     next(err);
   }

@@ -9,19 +9,21 @@ export class RoutineRepository {
     return RoutineModel.findById(id);
   }
 
-async findAll(userId?: string) {
-    const filter = userId ? { userId } : {};
+  async updateById(id: string, data: any) {
+    return RoutineModel.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  async findAll(userId?: string) {
+    const filter = userId ? { user: userId } : {};
     if (userId) {
-        return RoutineModel.find(filter).sort({ name: 1 });
+      return RoutineModel.find(filter).sort({ name: 1 });
     } else {
-        return RoutineModel.find(filter)
-            .sort({ name: 1 })
-            .populate({
-                path: "user",
-                select: "username profilePictureUrl",
-            });
+      return RoutineModel.find(filter).sort({ name: 1 }).populate({
+        path: "user",
+        select: "username profilePictureUrl",
+      });
     }
-}
+  }
 
   async deleteById(id: string) {
     return RoutineModel.findByIdAndDelete(id);

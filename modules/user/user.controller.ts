@@ -4,14 +4,12 @@ import { createTokenPair } from "./user.utils";
 import { AuthenticatedRequest } from "../../types/auth";
 
 const service = new UserService();
-const JWT_SECRET = process.env.JWT_SECRET || "changeme";
-const REFRESH_SECRET = process.env.REFRESH_SECRET || "changeme";
+const JWT_SECRET = process.env.JWT_SECRET || "hello_world_123_2026";
+const REFRESH_SECRET = process.env.REFRESH_SECRET || "hello_world_123_2026";
 
 /**
  * @function register
- * @description Registers a new user with the provided credentials and returns a token pair upon success.
- * 
- * Expects `email`, `password`, `repeatPassword`, and `username` in the request body.
+ * @description Registers a new user with the provided credentials
  * Responds with 201 and token pair on success, or 400/500 on failure.
  */
 export async function register(
@@ -20,7 +18,6 @@ export async function register(
   next: NextFunction,
 ) {
   try {
-    console.log("Registering user with data:", req.body);
     const { email, password, repeatPassword, username } = req.body;
 
     if (!email || !password || !repeatPassword || !username) {
@@ -43,9 +40,7 @@ export async function register(
 
 /**
     * @function login   
-    * @description Validates user credentials and returns a JWT token pair if successful.
-
-    * Expects `email` and `password` in the request body.
+    * @description Validates user credentials
     * Responds with 201 and token pair on success, or 401 on invalid credentials
 */
 export async function login(req: Request, res: Response, next: NextFunction) {
@@ -62,8 +57,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
 /** 
  * @function getCurrentUser
- * @description Retrieves the currently authenticated user's information based on the JWT token provided in the request.
- * Expects a valid JWT token in the `Authorization` header.
+ * @description Retrieves the currently authenticated user's information based on request JWT token
  * Responds with 200 and user information on success, or 401 on invalid or missing token.
  */
 export async function getUserData(req: Request, res: Response, next: NextFunction) {
