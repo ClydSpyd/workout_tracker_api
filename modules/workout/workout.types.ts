@@ -1,6 +1,7 @@
 export interface WorkoutSetInput {
   reps: number;
   weight: number;
+  completed?: boolean; // optional, defaults to false
 }
 
 export interface WorkoutExerciseInput {
@@ -12,6 +13,7 @@ export interface SetPayload {
   name: string;
   setData: WorkoutSetInput;
 }
+
 export interface CreateWorkoutPayload {
   exercises: WorkoutExerciseInput[]; // Can be added incrementally
   notes?: string;

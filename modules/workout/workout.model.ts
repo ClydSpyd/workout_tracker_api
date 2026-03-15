@@ -4,6 +4,7 @@ const SetSchema = new mongoose.Schema(
   {
     reps: { type: Number, required: true },
     weight: { type: Number, required: true },
+    completed: { type: Boolean, default: false },
   },
   { _id: false }
 );

@@ -33,10 +33,12 @@ export class WorkoutService {
     return this.repository.updateById(workoutId, workout);
   }
 
-  async addSetToWorkout(
+  async manageSetPayload(
     workoutId: string,
     setPayload: SetPayload,
     userId: string,
+    deleteSet: boolean,
+    setIdx?: number, // optional index for updating an existing set
   ) {
     const workout = await this.repository.findById(workoutId);
     if (!workout) throw new Error("Workout not found");
@@ -46,9 +48,29 @@ export class WorkoutService {
 
     const exercise = workout.exercises.find((ex) => ex.name === setPayload.name);
 
+    if (deleteSet) {
+      if (setIdx === undefined) {
+        throw new Error("Set index is required for deleting a set");
+      }
+      if (!exercise) {
+        throw new Error("Exercise not found in workout");
+      }
+      if (setIdx < 0 || setIdx >= exercise.sets.length) {
+        throw new Error("Set index out of bounds");
+      }
+      exercise.sets.splice(setIdx, 1); // remove the set at setIdx
+      return this.repository.updateById(workoutId, workout);
+    }
+
+
     if (exercise) {
-      // existing, push to sets
-      exercise.sets.push(setPayload.setData);
+      if (!!setIdx && setIdx >= 0 && setIdx < exercise.sets.length - 1) {
+        // existing workout, update existing set
+        exercise.sets[setIdx].set(setPayload.setData);
+      } else {
+        // existing workout, new set - push to sets
+        exercise.sets.push(setPayload.setData);
+      }
     } else {
       // new exercise, format and add to workout
       workout.exercises.push({

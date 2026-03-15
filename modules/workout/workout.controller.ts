@@ -52,11 +52,19 @@ export async function updateWorkout(
   }
 }
 
-export async function addSetToWorkout(
+export async function manageSetPayload(
   /**
    * POST /api/workout/:id/set
    * Add a new set to an exercise within a workout session.
    * Payload: { exerciseId, setData }
+   * 
+   * PATCH /api/workout/:id/set/:idx
+   * Update a specific set within an exercise in a workout session.
+   * Payload: { exerciseId, setData }
+   * 
+   * DELETE /api/workout/:id/set/:idx
+   * Delete a specific set within an exercise in a workout session.
+   * Payload: { setData: {name: string} }
    */
   req: Request,
   res: Response,
@@ -65,10 +73,14 @@ export async function addSetToWorkout(
   try {
     const authReq = req as AuthenticatedRequest;
     const userId = authReq.user.id;
-    const workout = await service.addSetToWorkout(
+    const updateIdx = req.params.idx ? parseInt(String(req.params.idx)) : undefined;
+
+    const workout = await service.manageSetPayload(
       String(req.params.id),
       req.body,
-      userId
+      userId,
+      req.method === "DELETE",
+      updateIdx
     );
     res.json(workout);
   } catch (err) {
