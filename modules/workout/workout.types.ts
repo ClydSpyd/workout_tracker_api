@@ -18,7 +18,7 @@ export interface CreateWorkoutPayload {
   exercises: WorkoutExerciseInput[]; // Can be added incrementally
   notes?: string;
   location?: string;
-  baseId?: string; // ID of the routine this workout is based on, if any
+  baseRoutine?: string; // ID of the routine this workout is based on, if any
   date?: Date; // defaults to now
 }
 

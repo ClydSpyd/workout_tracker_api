@@ -20,6 +20,7 @@ const ExerciseSchema = new mongoose.Schema(
 const WorkoutSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true, index: true },
+    name: { type: String, default: "Untitled Workout" },
     date: { type: Date, required: true, index: true, default: Date.now },
     notes: { type: String, default: "" },
     location: { type: String, default: "" },

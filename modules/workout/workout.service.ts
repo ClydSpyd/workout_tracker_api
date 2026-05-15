@@ -10,7 +10,7 @@ export class WorkoutService {
       throw new Error("User ID is required to log a workout");
     }
 
-    if (data.baseId && !Types.ObjectId.isValid(data.baseId)) {
+    if (data.baseRoutine && !Types.ObjectId.isValid(data.baseRoutine)) {
       throw new Error("Invalid routine baseID");
     }
 

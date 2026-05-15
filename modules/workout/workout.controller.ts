@@ -17,7 +17,7 @@ export async function createWorkout(
   /**
    * POST /api/workout/
    * Create a new workout session (can be partial, e.g. routineId only).
-   * Payload: { baseId, date, notes, exercises }
+   * Payload: { baseRoutine, date, notes, exercises }
    */
   req: Request,
   res: Response,

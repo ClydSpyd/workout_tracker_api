@@ -7,6 +7,8 @@ import { errorHandler } from "./middleware/error.middleware";
 export function createServer() {
   const app = express();
   app.use(express.json());
+  const cors = require('cors');
+  app.use(cors());
 
   // Serve static files
   app.use(express.static("public"));
