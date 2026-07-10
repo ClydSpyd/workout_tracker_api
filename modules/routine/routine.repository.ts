@@ -16,12 +16,15 @@ export class RoutineRepository {
   async findAll(userId?: string) {
     const filter = userId ? { user: userId } : {};
     if (userId) {
-      return RoutineModel.find(filter).sort({ name: 1 });
+      return RoutineModel.find(filter).sort({ name: 1 }).lean();
     } else {
-      return RoutineModel.find(filter).sort({ name: 1 }).populate({
-        path: "user",
-        select: "username profilePictureUrl",
-      });
+      return RoutineModel.find(filter)
+        .sort({ name: 1 })
+        .populate({
+          path: "user",
+          select: "username profilePictureUrl",
+        })
+        .lean();
     }
   }
 

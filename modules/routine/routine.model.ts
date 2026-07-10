@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const RoutineExerciseSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true }, // exercise ID corresponding to JSON data
     sets: [{ reps: Number, weight: Number }],
   },
   { _id: false }

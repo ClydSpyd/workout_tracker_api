@@ -15,6 +15,7 @@ export interface SetPayload {
 }
 
 export interface CreateWorkoutPayload {
+  name?: string; // optional, defaults to "Untitled Workout"
   exercises: WorkoutExerciseInput[]; // Can be added incrementally
   notes?: string;
   location?: string;
@@ -22,16 +23,16 @@ export interface CreateWorkoutPayload {
   date?: Date; // defaults to now
 }
 
-type BaseWorkout = WorkoutExerciseInput[];
-
 export interface WorkoutSession {
   _id: string;
+  name: string;
   userId: string;
   exercises: WorkoutExerciseInput[];
-  date: Date;
+  started: Date | null;
+  ended: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  baseWorkout?: BaseWorkout; // original routine exercises, if created from a routine
+  baseRoutine?: string; // original routine ID, if created from a routine
   notes?: string;
   location?: string;
 }

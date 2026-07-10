@@ -5,6 +5,7 @@ import {
   getUserWorkouts,
   updateWorkout,
   manageSetPayload,
+  handleExercisePayload,
 } from "./workout.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 
@@ -27,6 +28,34 @@ router.post("/", authMiddleware, createWorkout);
 router.patch("/:id", authMiddleware, updateWorkout);
 
 /**
+ * POST /api/workout/:id/exercise
+ * Add a new exercise to a workout session.
+ * Auth required. 
+ * Payload: { name: string, sets: WorkoutSetInput[] }
+ */
+router.post("/:id/exercise", authMiddleware, handleExercisePayload);
+
+/**
+ * PATCH /api/workout/:id/exercise/:exerciseName
+ * Update an existing exercise in a workout session.
+ * Auth required. 
+ * Payload: { name: string, sets: WorkoutSetInput[] }
+ */
+router.patch("/:id/exercise", authMiddleware, handleExercisePayload);
+
+/**
+ * DELETE /api/workout/:id/exercise/:exerciseName
+ * Delete an exercise from a workout session.
+ * Auth required. 
+ * Payload: None
+ */
+router.delete(
+  "/:id/exercise",
+  authMiddleware,
+  handleExercisePayload,
+);
+
+/**
  * POST /api/workout/:id/set
  * Add a new set to an exercise within a workout session.
  * Auth required. 
@@ -35,7 +64,7 @@ router.patch("/:id", authMiddleware, updateWorkout);
 router.post("/:id/set", authMiddleware, manageSetPayload);
 
 /** 
- *  POST /api/workout/:id/set/:idx
+ *  PATCH /api/workout/:id/set/:idx
  *  Update a specific set within an exercise in a workout session.
  *  Auth required. 
  *  Payload: SetPayload

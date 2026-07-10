@@ -21,7 +21,8 @@ const WorkoutSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true, index: true },
     name: { type: String, default: "Untitled Workout" },
-    date: { type: Date, required: true, index: true, default: Date.now },
+    started: { type: Date, default: null },
+    ended: { type: Date, default: null },
     notes: { type: String, default: "" },
     location: { type: String, default: "" },
     exercises: { type: [ExerciseSchema], required: true },

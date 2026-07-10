@@ -43,7 +43,7 @@ export class WorkoutRepository {
      * @param id Workout session ID
      * @returns Workout document
      */
-    return WorkoutModel.findById(id);
+    return WorkoutModel.findById(id).lean();
   }
 
   async updateById(id: string, data: any) {
@@ -61,7 +61,7 @@ export class WorkoutRepository {
      * @param userId Authenticated user ID
      * @returns Array of workout documents
      */
-    return WorkoutModel.find({ userId }).sort({ date: -1 });
+    return WorkoutModel.find({ userId }).sort({ date: -1 }).lean();
   }
 
   async findByUserAndDate(userId: string, date: Date) {

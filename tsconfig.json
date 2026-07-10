@@ -5,7 +5,9 @@
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["app.ts", "server.ts", "modules/**/*.ts", "middleware/**/*.ts", "config/**/*.ts"]
 }

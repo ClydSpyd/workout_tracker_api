@@ -14,13 +14,14 @@ Each file has a single, clear responsibility:
 
 | File | Responsibility |
 |------|---------------|
-| `[module].routes.ts`     | Maps HTTP routes (URLs) to controller functions
-| `[module].controller.ts` | Handles the HTTP layer (request/response logic)
-| `[module].service.ts`    | Contains business logic and domain rules
-| `[module].repository.ts` | Handles database access and queries
-| `[module].model.ts`      | Defines the MongoDB schema (Mongoose model)
-| `[module].types.ts`      | Contains TypeScript types and DTO definitions
-| `[module].schema.ts`.    | Defines zod validation schema for module controller
+| `[module].routes.ts`      | Maps HTTP routes (URLs) to controller functions
+| `[module].controller.ts`  | Handles the HTTP layer (request/response logic)
+| `[module].service.ts`     | Contains business logic and domain rules
+| `[module].repository.ts`  | Handles database access and queries
+| `[module].model.ts`       | Defines the MongoDB schema (Mongoose model)
+| `[module].types.ts`       | Contains TypeScript types and DTO definitions
+| `[module].schema.ts`      | Defines zod validation schema for module controller
+| `[module].utils.ts`       | Contains helper funtions for module operations
 
 
 # API Functionalities Overview
@@ -52,6 +53,14 @@ This module enables users to:
 - **History:** Supports historical tracking and analytics for user metrics.
 - **Partial updates:** Endpoints accept partial objects for easy metric updates.
 - **Repository/service pattern:** Clean separation of DB and business logic.
+
+### Exercise Module
+This module enables users to:
+- **List all exercises:** Fetch all available resistance exercises from the static data source.
+- **Fetch a specific exercise:** Retrieve details of an exercise by its unique ID.
+- **Search exercises by text:** Find exercises by name, muscle group, or other text fields using a query parameter.
+- **No database dependency:** All data is served from a static JSON file for fast, read-only access.
+- **Repository/service pattern:** Clean separation of data access, business logic, and controller layers for maintainability.
 
 
 ## Middlewares

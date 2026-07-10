@@ -88,6 +88,40 @@ export async function manageSetPayload(
   }
 }
 
+export async function handleExercisePayload(
+  /**
+   * POST /api/workout/:id/exercise
+   * Add a new exercise to a workout session.
+   * Payload: { name: string, sets: WorkoutSetInput[] }
+   * 
+   * PATCH /api/workout/:id/exercise/:exerciseName
+   * Update an existing exercise in a workout session.
+   * Payload: { name: string, sets: WorkoutSetInput[] }
+   * 
+   * DELETE /api/workout/:id/exercise/:exerciseName
+   * Delete an exercise from a workout session.
+   * Payload: None
+   */
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    const deleteExercise = req.method === "DELETE";
+    const workout = await service.handleExercisePayload(
+      String(req.params.id),
+      req.body,
+      userId,
+      req.method
+    );
+    res.json(workout);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getWorkout(
   /**
    * GET /api/workout/:id
