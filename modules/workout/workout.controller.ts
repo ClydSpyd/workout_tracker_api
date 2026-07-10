@@ -141,6 +141,25 @@ export async function getWorkout(
   }
 }
 
+export async function getActiveSession(
+  /**
+   * GET /api/workout/active
+   * Retrieve the authenticated user's ongoing workout session, if any.
+   */
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    const workout = await service.getActiveSession(userId);
+    res.json(workout);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getUserWorkouts(
   req: Request,
   res: Response,

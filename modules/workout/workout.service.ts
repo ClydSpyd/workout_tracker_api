@@ -25,6 +25,15 @@ export class WorkoutService {
       throw new Error("Invalid routine baseID");
     }
 
+    const ongoing = await this.repository.findActiveByUser(userId);
+    if (ongoing) {
+      const error = new Error(
+        "You already have an ongoing workout. Finish it before starting a new one.",
+      ) as Error & { status?: number };
+      error.status = 409;
+      throw error;
+    }
+
     return this.repository.create({ ...data, userId });
   }
 
@@ -37,7 +46,7 @@ export class WorkoutService {
 
     const workout = await this.repository.findById(workoutId);
     if (!workout) throw new Error("Workout not found");
-    if (workout.userId !== userId) {
+    if (workout.userId.toString() !== userId) {
       throw new Error("You do not have permission to update this workout");
     }
 
@@ -57,7 +66,7 @@ export class WorkoutService {
 
     const workout = await this.repository.findById(workoutId);
     if (!workout) throw new Error("Workout not found");
-    if (workout.userId !== userId) {
+    if (workout.userId.toString() !== userId) {
       throw new Error("You do not have permission to update this workout");
     }
 
@@ -109,7 +118,7 @@ export class WorkoutService {
 
     const workout = await this.repository.findById(workoutId);
     if (!workout) throw new Error("Workout not found");
-    if (workout.userId !== userId) {
+    if (workout.userId.toString() !== userId) {
       throw new Error("You do not have permission to update this workout");
     }
 
@@ -148,10 +157,29 @@ export class WorkoutService {
     const workout = await this.repository.findById(workoutId);
     if (!workout) throw new Error("Workout not found");
 
-    if (workout.userId !== userId) {
+    if (workout.userId.toString() !== userId) {
       throw new Error("You do not have permission to view this workout");
     }
     
+    // enrich exercises with details from exercise data based on exercise ID stored in DB
+    const enrichedExercises = workout.exercises.map((ex) =>
+      enrichExerciseEntry(ex),
+    );
+
+    return {
+      ...workout,
+      exercises: enrichedExercises,
+    };
+  }
+
+  async getActiveSession(userId: string) {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+    const workout = await this.repository.findActiveByUser(userId);
+    if (!workout) return null;
+
     // enrich exercises with details from exercise data based on exercise ID stored in DB
     const enrichedExercises = workout.exercises.map((ex) =>
       enrichExerciseEntry(ex),

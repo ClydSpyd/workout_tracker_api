@@ -3,6 +3,7 @@ import {
   createWorkout,
   getWorkout,
   getUserWorkouts,
+  getActiveSession,
   updateWorkout,
   manageSetPayload,
   handleExercisePayload,
@@ -79,9 +80,16 @@ router.patch("/:id/set/:idx", authMiddleware, manageSetPayload);
 router.delete("/:id/set/:idx", authMiddleware, manageSetPayload);
 
 /**
+ * GET /api/workout/active
+ * Get the authenticated user's ongoing workout session, if any.
+ * Auth required.
+ */
+router.get("/active", authMiddleware, getActiveSession);
+
+/**
  * GET /api/workout/mine
  * Get all workouts for the authenticated user.
- * Auth required. 
+ * Auth required.
  */
 router.get("/mine", authMiddleware, getUserWorkouts);
 

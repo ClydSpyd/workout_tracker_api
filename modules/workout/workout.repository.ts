@@ -37,6 +37,16 @@ export class WorkoutRepository {
     return await WorkoutModel.create(data);
   }
 
+  async findActiveByUser(userId: string) {
+    /**
+     * Find the user's ongoing workout, if any.
+     * A workout is "ongoing" while it has not been ended.
+     * @param userId Authenticated user ID
+     * @returns Workout document or null
+     */
+    return WorkoutModel.findOne({ userId, ended: null }).lean();
+  }
+
   async findById(id: string) {
     /**
      * Retrieve a workout session by ID
