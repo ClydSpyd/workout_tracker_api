@@ -11,7 +11,8 @@ const SetSchema = new mongoose.Schema(
 
 const ExerciseSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    exerciseId: { type: String }, // slug FK into the exercise catalog (resistance_exercises_base.json)
+    // name: { type: String, required: true },
     sets: { type: [SetSchema], required: true },
   },
   { _id: false }
@@ -29,6 +30,7 @@ const WorkoutSchema = new mongoose.Schema(
     started: { type: Date, default: null },
     ended: { type: Date, default: null },
     notes: { type: String, default: "" },
+    tags: { type: [String], default: [] },
     location: { type: String, default: "" },
     exercises: { type: [ExerciseSchema], required: true },
     baseRoutine: {

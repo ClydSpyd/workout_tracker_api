@@ -1,10 +1,7 @@
-export interface RoutineExerciseInput {
-  name: string;
-  sets: { reps: number; weight: number }[];
-}
+import { ExerciseInput } from "../exercise/exercise.types";
 
 export interface RoutineInput {
   name: string;
   description?: string;
-  exercises: RoutineExerciseInput[];
+  exercises: ExerciseInput[];
 }

@@ -10,7 +10,7 @@ export const CreateRoutineSchema = z.object({
   description: z.string().optional(),
   exercises: z.array(
     z.object({
-      name: z.string({ error: "Exercise name is required" }),
+      exerciseId: z.string({ error: "Exercise ID is required" }),
       sets: z.array(
         z.object({
           reps: z.number().int().positive("Reps must be a positive integer"),

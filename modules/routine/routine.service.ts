@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { RoutineRepository } from "./routine.repository";
-import { RoutineExerciseInput, RoutineInput } from "./routine.types";
-import { enrichExerciseEntry } from "../exercise/exercise.utils";
+import { RoutineInput } from "./routine.types";
+import { withEnrichedExercises } from "../exercise/exercise.utils";
 
 export class RoutineService {
   private repository = new RoutineRepository();
@@ -26,22 +26,13 @@ export class RoutineService {
     }
     const routine = await this.repository.findById(id);
     if (!routine) throw new Error("Routine not found");
-    return {
-      ...routine,
-      exercises: routine.exercises.map((ex) =>
-        enrichExerciseEntry(ex as RoutineExerciseInput),
-      ),
-    };
+
+    return withEnrichedExercises(routine);
   }
 
   async getAllRoutines(userId?: string) {
     const routines = await this.repository.findAll(userId);
-    return routines.map((routine) => ({
-      ...routine,
-      exercises: routine.exercises.map((ex) =>
-        enrichExerciseEntry(ex as RoutineExerciseInput),
-      ),
-    }));
+    return routines.map(withEnrichedExercises);
   }
 
   async deleteRoutine(id: string) {

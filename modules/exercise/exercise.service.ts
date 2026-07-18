@@ -39,9 +39,9 @@ export class ExerciseService {
     return resistanceExercises.map((ex: any) => ({
       id: ex.id,
       name: ex.name,
-    //   category: ex.category,
-    //   equipment: ex.equipment,
-    //   musclegroups: ex.muscleGroups,
+      equipment: ex.equipment,
+      muscleGroups: ex.muscleGroups,
+      bodyRegion: ex.bodyRegion,
     }));
   }
 }

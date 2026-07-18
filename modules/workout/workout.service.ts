@@ -1,7 +1,8 @@
 import { Types } from "mongoose";
 import { WorkoutRepository } from "./workout.repository";
-import { CreateWorkoutPayload, SetPayload, WorkoutExerciseInput, WorkoutSession } from "./workout.types";
-import { enrichExerciseEntry } from "../exercise/exercise.utils";
+import { CreateWorkoutPayload, SetPayload, WorkoutSession } from "./workout.types";
+import { withEnrichedExercises } from "../exercise/exercise.utils";
+import { ExerciseInput } from "../exercise/exercise.types";
 
 export class WorkoutService {
   private repository = new WorkoutRepository();
@@ -14,6 +15,18 @@ export class WorkoutService {
       error.status = 400;
       throw error;
     }
+  }
+
+  /** Validate the id, load the workout, and assert the user owns it. */
+  private async loadOwnedWorkout(workoutId: string, userId: string) {
+    this.assertValidWorkoutId(workoutId);
+
+    const workout = await this.repository.findById(workoutId);
+    if (!workout) throw new Error("Workout not found");
+    if (workout.userId.toString() !== userId) {
+      throw new Error("You do not have permission to access this workout");
+    }
+    return workout;
   }
 
   async createWorkout(data: CreateWorkoutPayload, userId: string) {
@@ -42,17 +55,15 @@ export class WorkoutService {
     updates: Partial<WorkoutSession>,
     userId: string,
   ) {
-    this.assertValidWorkoutId(workoutId);
-
-    const workout = await this.repository.findById(workoutId);
-    if (!workout) throw new Error("Workout not found");
-    if (workout.userId.toString() !== userId) {
-      throw new Error("You do not have permission to update this workout");
-    }
+    const workout = await this.loadOwnedWorkout(workoutId, userId);
 
     // merge updates into workout
     Object.assign(workout, updates);
-    return this.repository.updateById(workoutId, workout);
+    const updated = await this.repository.updateById(workoutId, workout);
+    if (!updated) {
+      throw new Error("Workout not found");
+    }
+    return withEnrichedExercises(updated);
   }
 
   async manageSetPayload(
@@ -62,16 +73,10 @@ export class WorkoutService {
     deleteSet: boolean,
     setIdx?: number, // optional index for updating an existing set
   ) {
-    this.assertValidWorkoutId(workoutId);
-
-    const workout = await this.repository.findById(workoutId);
-    if (!workout) throw new Error("Workout not found");
-    if (workout.userId.toString() !== userId) {
-      throw new Error("You do not have permission to update this workout");
-    }
+    const workout = await this.loadOwnedWorkout(workoutId, userId);
 
     const exercise = workout.exercises.find(
-      (ex) => ex.name === setPayload.name,
+      (ex) => ex.exerciseId === setPayload.exerciseId,
     );
 
     if (deleteSet) {
@@ -85,10 +90,7 @@ export class WorkoutService {
         throw new Error("Set index out of bounds");
       }
       exercise.sets.splice(setIdx, 1); // remove the set at setIdx
-      return this.repository.updateById(workoutId, workout);
-    }
-
-    if (exercise) {
+    } else if (exercise) {
       if (
         typeof setIdx !== "undefined" &&
         setIdx >= 0 &&
@@ -105,25 +107,23 @@ export class WorkoutService {
       throw new Error("Exercise not found in workout");
     }
 
-    return this.repository.updateById(workoutId, workout);
+    const updated = await this.repository.updateById(workoutId, workout);
+    if (!updated) {
+      throw new Error("Workout not found");
+    }
+    return withEnrichedExercises(updated);
   }
 
   async handleExercisePayload(
     workoutId: string,
-    exercisePayload: WorkoutExerciseInput,
+    exercisePayload: ExerciseInput,
     userId: string,
     method: string,
   ) {
-    this.assertValidWorkoutId(workoutId);
-
-    const workout = await this.repository.findById(workoutId);
-    if (!workout) throw new Error("Workout not found");
-    if (workout.userId.toString() !== userId) {
-      throw new Error("You do not have permission to update this workout");
-    }
+    const workout = await this.loadOwnedWorkout(workoutId, userId);
 
     const existingExerciseIndex = workout.exercises.findIndex(
-      (ex) => ex.name === exercisePayload.name,
+      (ex) => ex.exerciseId === exercisePayload.exerciseId,
     );
 
     if (method === "DELETE") {
@@ -148,28 +148,16 @@ export class WorkoutService {
       workout.exercises.push(exercisePayload);
     }
 
-    return this.repository.updateById(workoutId, workout);
+    const updated = await this.repository.updateById(workoutId, workout);
+    if (!updated) {
+      throw new Error("Workout not found");
+    }
+    return withEnrichedExercises(updated);
   }
 
   async getWorkout(workoutId: string, userId: string) {
-    this.assertValidWorkoutId(workoutId);
-
-    const workout = await this.repository.findById(workoutId);
-    if (!workout) throw new Error("Workout not found");
-
-    if (workout.userId.toString() !== userId) {
-      throw new Error("You do not have permission to view this workout");
-    }
-    
-    // enrich exercises with details from exercise data based on exercise ID stored in DB
-    const enrichedExercises = workout.exercises.map((ex) =>
-      enrichExerciseEntry(ex),
-    );
-
-    return {
-      ...workout,
-      exercises: enrichedExercises,
-    };
+    const workout = await this.loadOwnedWorkout(workoutId, userId);
+    return withEnrichedExercises(workout);
   }
 
   async getActiveSession(userId: string) {
@@ -180,31 +168,12 @@ export class WorkoutService {
     const workout = await this.repository.findActiveByUser(userId);
     if (!workout) return null;
 
-    // enrich exercises with details from exercise data based on exercise ID stored in DB
-    const enrichedExercises = workout.exercises.map((ex) =>
-      enrichExerciseEntry(ex),
-    );
-
-    return {
-      ...workout,
-      exercises: enrichedExercises,
-    };
+    return withEnrichedExercises(workout);
   }
 
   async getUserWorkouts(userId: string) {
     const workouts = await this.repository.findByUser(userId);
-
-    return workouts.map((workout) => {
-      // enrich exercises with details from exercise data based on exercise ID stored in DB
-      const enrichedExercises = workout.exercises.map((ex) =>
-        enrichExerciseEntry(ex),
-      );
-
-      return {
-        ...workout,
-        exercises: enrichedExercises,
-      };
-    });
+    return workouts.map(withEnrichedExercises);
   }
 
   async deleteWorkout(id: string) {

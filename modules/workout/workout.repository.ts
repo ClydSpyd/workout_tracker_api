@@ -9,9 +9,10 @@
  *   - findByUserAndDate: Find a workout by user and date
  *   - deleteById: Delete a workout session by ID
  */
+import { ExerciseInput } from "../exercise/exercise.types";
 import { RoutineModel } from "../routine/routine.model";
 import { WorkoutModel } from "./workout.model";
-import { CreateWorkoutPayload, WorkoutExerciseInput } from "./workout.types";
+import { CreateWorkoutPayload } from "./workout.types";
 
 export class WorkoutRepository {
   /**
@@ -31,7 +32,7 @@ export class WorkoutRepository {
       data.exercises = baseRoutine.exercises.map((ex) => ({
         ...ex,
         sets: ex.sets.map((set) => ({ ...set, completed: false })),
-      })) as WorkoutExerciseInput[];
+      })) as ExerciseInput[];
     }
     
     return await WorkoutModel.create(data);

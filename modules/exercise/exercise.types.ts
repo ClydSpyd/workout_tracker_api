@@ -1,3 +1,5 @@
+import { WorkoutSetInput } from "../workout/workout.types";
+
 // Types for exercise module
 export interface Exercise {
   id: string;
@@ -25,4 +27,9 @@ export interface Exercise {
   aliases: string[];
   tags: string[];
   [key: string]: any;
+}
+
+export interface ExerciseInput {
+  exerciseId: string; // stable slug FK into the exercise catalog, e.g. "barbell-bench-press"
+  sets: WorkoutSetInput[];
 }

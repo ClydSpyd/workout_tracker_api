@@ -1,22 +1,20 @@
+import { ExerciseInput } from "../exercise/exercise.types";
+
 export interface WorkoutSetInput {
   reps: number;
   weight: number;
   completed?: boolean; // optional, defaults to false
 }
 
-export interface WorkoutExerciseInput {
-  name: string;
-  sets: WorkoutSetInput[];
-}
-
 export interface SetPayload {
   name: string;
+  exerciseId?: string; // optional; entries are matched by name for backward compatibility
   setData: WorkoutSetInput;
 }
 
 export interface CreateWorkoutPayload {
   name?: string; // optional, defaults to "Untitled Workout"
-  exercises: WorkoutExerciseInput[]; // Can be added incrementally
+  exercises: ExerciseInput[]; // Can be added incrementally
   notes?: string;
   location?: string;
   baseRoutine?: string; // ID of the routine this workout is based on, if any
@@ -27,7 +25,7 @@ export interface WorkoutSession {
   _id: string;
   name: string;
   userId: string;
-  exercises: WorkoutExerciseInput[];
+  exercises: ExerciseInput[];
   started: Date | null;
   ended: Date | null;
   createdAt: Date;
