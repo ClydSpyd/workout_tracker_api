@@ -12,6 +12,11 @@ export interface SetPayload {
   setData: WorkoutSetInput;
 }
 
+export interface ReplaceExercisePayload {
+  fromExerciseId: string; // exercise currently in the workout
+  toExerciseId: string; // exercise to swap it for (sets are preserved)
+}
+
 export interface CreateWorkoutPayload {
   name?: string; // optional, defaults to "Untitled Workout"
   exercises: ExerciseInput[]; // Can be added incrementally

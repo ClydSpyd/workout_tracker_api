@@ -10,6 +10,10 @@ const byName = new Map<string, Exercise>(
   catalog.map((e) => [e.name.toLowerCase(), e]),
 );
 
+/** True if the slug id resolves to a known catalog exercise. */
+export const exerciseExists = (exerciseId: string): boolean =>
+  byId.has(exerciseId);
+
 
 export interface EnrichedExercise {
   exerciseId: string;

@@ -1,7 +1,12 @@
 import { Types } from "mongoose";
 import { WorkoutRepository } from "./workout.repository";
-import { CreateWorkoutPayload, SetPayload, WorkoutSession } from "./workout.types";
-import { withEnrichedExercises } from "../exercise/exercise.utils";
+import {
+  CreateWorkoutPayload,
+  ReplaceExercisePayload,
+  SetPayload,
+  WorkoutSession,
+} from "./workout.types";
+import { exerciseExists, withEnrichedExercises } from "../exercise/exercise.utils";
 import { ExerciseInput } from "../exercise/exercise.types";
 
 export class WorkoutService {
@@ -147,6 +152,66 @@ export class WorkoutService {
       }
       workout.exercises.push(exercisePayload);
     }
+
+    const updated = await this.repository.updateById(workoutId, workout);
+    if (!updated) {
+      throw new Error("Workout not found");
+    }
+    return withEnrichedExercises(updated);
+  }
+
+  /**
+   * Replace one exercise in a workout with another, keeping the existing sets
+   * intact. Only the exercise identity (`exerciseId`) changes.
+   */
+  async replaceExercise(
+    workoutId: string,
+    payload: ReplaceExercisePayload,
+    userId: string,
+  ) {
+    const { fromExerciseId, toExerciseId } = payload;
+    console.log(`Replacing exercise ${fromExerciseId} with ${toExerciseId} in workout ${workoutId}`);
+
+    if (!fromExerciseId || !toExerciseId) {
+      const error = new Error(
+        "Both fromExerciseId and toExerciseId are required",
+      ) as Error & { status?: number };
+      error.status = 400;
+      throw error;
+    }
+
+    if (!exerciseExists(toExerciseId)) {
+      const error = new Error(
+        "Replacement exercise does not exist in the catalog",
+      ) as Error & { status?: number };
+      error.status = 400;
+      throw error;
+    }
+
+    const workout = await this.loadOwnedWorkout(workoutId, userId);
+
+    console.log(`Loaded workout: ${JSON.stringify(workout)}`);
+    const index = workout.exercises.findIndex(
+      (ex) => ex.exerciseId === fromExerciseId,
+    );
+    if (index === -1) {
+      throw new Error("Exercise not found in workout");
+    }
+
+    // Guard against collapsing two entries into a duplicate exerciseId
+    const clashesWithOther = workout.exercises.some(
+      (ex, i) => i !== index && ex.exerciseId === toExerciseId,
+    );
+    if (clashesWithOther) {
+      const error = new Error(
+        "That exercise is already in the workout",
+      ) as Error & { status?: number };
+      error.status = 409;
+      throw error;
+    }
+
+    // Swap identity only; the sets on this entry are left untouched
+    workout.exercises[index].exerciseId = toExerciseId;
 
     const updated = await this.repository.updateById(workoutId, workout);
     if (!updated) {

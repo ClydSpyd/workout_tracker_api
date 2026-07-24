@@ -7,6 +7,7 @@ import {
   updateWorkout,
   manageSetPayload,
   handleExercisePayload,
+  replaceExercise,
 } from "./workout.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 
@@ -47,7 +48,7 @@ router.patch("/:id/exercise", authMiddleware, handleExercisePayload);
 /**
  * DELETE /api/workout/:id/exercise/:exerciseName
  * Delete an exercise from a workout session.
- * Auth required. 
+ * Auth required.
  * Payload: None
  */
 router.delete(
@@ -55,6 +56,14 @@ router.delete(
   authMiddleware,
   handleExercisePayload,
 );
+
+/**
+ * PATCH /api/workout/:id/exercise/replace
+ * Replace one exercise with another, preserving the existing sets.
+ * Auth required.
+ * Payload: { fromExerciseId: string, toExerciseId: string }
+ */
+router.patch("/:id/exercise/replace", authMiddleware, replaceExercise);
 
 /**
  * POST /api/workout/:id/set

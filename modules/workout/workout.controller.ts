@@ -122,6 +122,30 @@ export async function handleExercisePayload(
   }
 }
 
+export async function replaceExercise(
+  /**
+   * PATCH /api/workout/:id/exercise/replace
+   * Replace one exercise with another, preserving the existing sets.
+   * Payload: { fromExerciseId: string, toExerciseId: string }
+   */
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    const workout = await service.replaceExercise(
+      String(req.params.id),
+      req.body,
+      userId
+    );
+    res.json(workout);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getWorkout(
   /**
    * GET /api/workout/:id
