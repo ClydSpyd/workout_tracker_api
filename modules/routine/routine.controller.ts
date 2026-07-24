@@ -89,6 +89,25 @@ export async function getAllRoutinesByUser(
 }
 
 /**
+ * DELETE /api/routine/:id
+ * Deletes a routine owned by the authenticated user.
+ */
+export async function deleteRoutine(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    await service.deleteRoutine(String(req.params.id), userId);
+    res.json({ message: "Routine deleted" });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * PATCH /api/routine/:id
  * Updates an existing routine (e.g. add/remove exercises).
  */

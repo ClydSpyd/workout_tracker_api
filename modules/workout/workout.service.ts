@@ -241,8 +241,9 @@ export class WorkoutService {
     return workouts.map(withEnrichedExercises);
   }
 
-  async deleteWorkout(id: string) {
-    this.assertValidWorkoutId(id);
+  async deleteWorkout(id: string, userId: string) {
+    // Ownership is enforced before deletion
+    await this.loadOwnedWorkout(id, userId);
 
     return this.repository.deleteById(id);
   }

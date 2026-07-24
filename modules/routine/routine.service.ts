@@ -35,7 +35,17 @@ export class RoutineService {
     return routines.map(withEnrichedExercises);
   }
 
-  async deleteRoutine(id: string) {
+  async deleteRoutine(id: string, userId: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new Error("Invalid routine ID");
+    }
+
+    const routine = await this.repository.findById(id);
+    if (!routine) throw new Error("Routine not found");
+    if (routine.user.toString() !== userId) {
+      throw new Error("You do not have permission to delete this routine");
+    }
+
     return this.repository.deleteById(id);
   }
 }

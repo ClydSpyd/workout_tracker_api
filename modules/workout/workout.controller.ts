@@ -146,6 +146,25 @@ export async function replaceExercise(
   }
 }
 
+export async function deleteWorkout(
+  /**
+   * DELETE /api/workout/:id
+   * Delete a workout session by its unique ID.
+   */
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user.id;
+    await service.deleteWorkout(String(req.params.id), userId);
+    res.json({ message: "Workout deleted" });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getWorkout(
   /**
    * GET /api/workout/:id

@@ -8,6 +8,7 @@ import {
   manageSetPayload,
   handleExercisePayload,
   replaceExercise,
+  deleteWorkout,
 } from "./workout.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 
@@ -105,9 +106,16 @@ router.get("/mine", authMiddleware, getUserWorkouts);
 /**
  * GET /api/workout/:id
  * Get a workout by its ID.
- * Auth required. 
+ * Auth required.
  */
 router.get("/:id", authMiddleware, getWorkout);
+
+/**
+ * DELETE /api/workout/:id
+ * Delete a workout session by its ID.
+ * Auth required.
+ */
+router.delete("/:id", authMiddleware, deleteWorkout);
 
 
 export default router;

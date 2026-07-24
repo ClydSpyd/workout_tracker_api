@@ -5,6 +5,7 @@ import {
   getAllRoutines,
   getAllRoutinesByUser,
   updateRoutine,
+  deleteRoutine,
 } from "./routine.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 
@@ -41,5 +42,11 @@ router.post("/", authMiddleware, createRoutine);
  * Payload: Partial<RoutineInput>
 */
 router.patch("/:id", authMiddleware, updateRoutine);
+
+/**
+ * DELETE /api/routine/:id
+ * Auth required. Delete a routine owned by the authenticated user.
+ */
+router.delete("/:id", authMiddleware, deleteRoutine);
 
 export default router;
