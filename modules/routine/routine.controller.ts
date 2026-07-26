@@ -18,16 +18,26 @@ export async function createRoutine(
   try {
     const result = CreateRoutineSchema.safeParse(req.body);
     if (!result.success) {
-      const flatErrors = result.error.issues.map((e: z.core.$ZodIssue) => {
-        console.error(`CREATE_ROUTINE [${e.path.join(".")}] ${e.message}`);
-        return `${e.message}`;
+      // The offending field lives on issue.path, not in the message — keep it
+      // in the response so the client isn't left with a contextless error.
+      const issues = result.error.issues.map((e: z.core.$ZodIssue) => ({
+        field: e.path.join(".") || "(body)",
+        message: e.message,
+      }));
+
+      issues.forEach(({ field, message }) =>
+        console.error(`CREATE_ROUTINE [${field}] ${message}`),
+      );
+
+      return res.status(400).json({
+        error: `${issues[0].field}: ${issues[0].message}`,
+        details: issues,
       });
-      return res.status(400).json({ error: flatErrors[0] });
     }
-    
+
     const authReq = req as AuthenticatedRequest;
     const userId = authReq.user.id;
-    const routine = await service.createRoutine(req.body, userId);
+    const routine = await service.createRoutine(result.data, userId);
     res.status(201).json(routine);
   } catch (err) {
     next(err);

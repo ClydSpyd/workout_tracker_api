@@ -33,8 +33,12 @@ export class WorkoutRepository {
         ...ex,
         sets: ex.sets.map((set) => ({ ...set, completed: false })),
       })) as ExerciseInput[];
+
+      // Starting a workout from a routine counts as performing it.
+      baseRoutine.set("lastPerformed", new Date());
+      await baseRoutine.save();
     }
-    
+
     return await WorkoutModel.create(data);
   }
 

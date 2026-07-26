@@ -8,6 +8,7 @@ export const CreateRoutineSchema = z.object({
     })
     .min(1, "Routine name is required"),
   description: z.string().optional(),
+  tags: z.array(z.string(), { error: "At least one tag is required" }),
   exercises: z.array(
     z.object({
       exerciseId: z.string({ error: "Exercise ID is required" }),

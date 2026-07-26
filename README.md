@@ -30,9 +30,6 @@ in `routine`, `user` and `exercise`, and helpers in `user` (JWT token pair) and 
 Routers are mounted in `app.ts` under `/api/workout`, `/api/routine`, `/api/user` and
 `/api/exercise`. `GET /api/docs` serves `public/docs.html`.
 
-> **Note:** `modules/userMetrics` is fully implemented but **not currently mounted** in
-> `app.ts`, so its endpoints are unreachable. Mount it under `/api/userMetrics` to enable.
-
 ## Exercise Reference Architecture
 
 The exercise catalog is a **static JSON dataset** (`assets/data/resistance_exercises_base.json`),

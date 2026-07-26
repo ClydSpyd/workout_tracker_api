@@ -11,9 +11,12 @@ const RoutineExerciseSchema = new mongoose.Schema(
 const RoutineSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    description: { type: String, default: "" },
     exercises: { type: [RoutineExerciseSchema], required: true },
-    tags: { type: [String], default: [] },
+    tags: { type: [String], required: true },
+    description: { type: String, default: "" },
+    // Stamped whenever a workout is started from this routine. System-managed —
+    // not accepted from client payloads.
+    lastPerformed: { type: Date, default: null },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
